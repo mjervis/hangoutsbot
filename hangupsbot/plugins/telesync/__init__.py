@@ -644,7 +644,7 @@ def tg_command_sync_profile(bot, chat_id, args):
     bot.ho_bot.memory.set_by_path(['profilesync'], new_memory)
 
     yield from bot.sendMessage(chat_id, "Paste the following command in the private ho with me")
-    yield from bot.sendMessage(chat_id, "/bot syncprofile {}".format(str(rndm)))
+    yield from bot.sendMessage(chat_id, "{} syncprofile {}".format(bot.ho_bot._handlers.bot_command[0], str(rndm)))
 
 
 @asyncio.coroutine
@@ -657,12 +657,12 @@ def tg_command_unsync_profile(bot, chat_id, args):
     ho2tg_dict = bot.ho_bot.memory.get_by_path(['profilesync'])['ho2tg']
     text = ""
     if args['user_id'] in tg2ho_dict:
-        ho_id = tg2ho_dict[str(args['user_id'])]['ho_id']
+        ho_id = tg2ho_dict[str(args['user_id'])]
         del tg2ho_dict[str(args['user_id'])]
         del ho2tg_dict[str(ho_id)]
         new_memory = {'tg2ho': tg2ho_dict, 'ho2tg': ho2tg_dict}
         bot.ho_bot.memory.set_by_path(['profilesync'], new_memory)
-        text = "Succsessfully removed sync of your profile."
+        text = "Successfully removed sync of your profile."
     else:
         text = "There is no sync setup for your profile."
 
@@ -768,7 +768,7 @@ def syncprofile(bot, event, *args):
             ho2tg_dict[str(event.user_id.chat_id)] = str(tg_id)
             new_mem = {'tg2ho': tg2ho_dict, 'ho2tg': ho2tg_dict}
             bot.memory.set_by_path(['profilesync'], new_mem)
-            yield from bot.coro_send_message(event.conv_id, "Succsesfully set up profile sync.")
+            yield from bot.coro_send_message(event.conv_id, "Succesfully set up profile sync.")
         else:
             yield from bot.coro_send_message(event.conv_id,
                                              "You have to execute following command from telegram first:")
