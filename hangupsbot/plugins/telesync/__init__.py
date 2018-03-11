@@ -837,10 +837,13 @@ def is_valid_image_link(url):
                     resp.close()
                     if "image" in headers['CONTENT-TYPE']:
                         content_disp = headers['CONTENT-DISPOSITION']
-                        content_disp = content_disp.replace("\"", "").split("=")
-                        file_ext = content_disp[2].split('.')[1].strip()
+                        for part in content_disp.split(';'):
+                            if part.startswith('filename="'):
+                                file_name = part[10:-1].strip()
+                                break
+                        file_ext = headers['content-type'].split('/', 1)[1]
+                        logger.debug("Filename: %s file Extension: %s", file_name, file_ext)
                         if file_ext in ("jpg", "jpeg", "gif", "gifv", "webm", "png", "mp4"):
-                            file_name = content_disp[1].split("?")[0].strip()
                             return True, "{name}.{ext}".format(name=file_name, ext=file_ext)
     return False, ""
 
