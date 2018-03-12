@@ -606,28 +606,23 @@ def tg_command_tldr(bot, chat_id, args):
     params = args['params']
 
     tg2ho_dict = tg_bot.ho_bot.memory.get_by_path(['telesync'])['tg2ho']
-    if str(chat_id) in tg2ho_dict:
-        ho_conv_id = tg2ho_dict[str(chat_id)]
-        tldr_args = {'params': params, 'conv_id': ho_conv_id}
-        try:
-            text = bot.ho_bot.call_shared("plugin_tldr_shared", bot.ho_bot, tldr_args)
-            yield from bot.sendMessage(chat_id, text, parse_mode='HTML')
-        except KeyError as ke:
-            yield from bot.sendMessage(chat_id, "TLDR plugin is not active. KeyError: {e}".format(e=ke))
-    elif str(chat_id) not in tg2ho_dict:
-        ho_conv_id = str(chat_id)
-        tldr_args = {'params': params, 'conv_id': ho_conv_id}
-        try:
-            text = bot.ho_bot.call_shared("plugin_tldr_shared", bot.ho_bot, tldr_args)
-            yield from bot.sendMessage(chat_id, text, parse_mode='HTML')
-        except KeyError as ke:
-            yield from bot.sendMessage(chat_id, "TLDR plugin is not active. KeyError: {e}".format(e=ke))
+    
+    ho_conv_id = str(chat_id)
+    if ho_conv_id in tg2ho_dict:
+        ho_conv_id = tg2ho_dict[ho_conv_id]
+    
+    tldr_args = {'params': params, 'conv_id': ho_conv_id}
+    try:
+        text = bot.ho_bot.call_shared("plugin_tldr_shared", bot.ho_bot, tldr_args)
+        yield from bot.sendMessage(chat_id, text, parse_mode='html')
+    except KeyError as ke:
+        yield from bot.sendMessage(chat_id, "TLDR plugin is not active. KeyError: {e}".format(e=ke))
 
 
 @asyncio.coroutine
 def tg_command_sync_profile(bot, chat_id, args):
     if 'private' != args['chat_type']:
-        yield from bot.sendMessage(chat_id, "Comand must be run in private chat!")
+        yield from bot.sendMessage(chat_id, "Command must be run in private chat!")
         return
     tg2ho_dict = bot.ho_bot.memory.get_by_path(['profilesync'])['tg2ho']
     ho2tg_dict = bot.ho_bot.memory.get_by_path(['profilesync'])['ho2tg']
@@ -650,7 +645,7 @@ def tg_command_sync_profile(bot, chat_id, args):
 @asyncio.coroutine
 def tg_command_unsync_profile(bot, chat_id, args):
     if 'private' != args['chat_type']:
-        yield from bot.sendMessage(chat_id, "Comand must be run in private chat!")
+        yield from bot.sendMessage(chat_id, "Command must be run in private chat!")
         return
 
     tg2ho_dict = bot.ho_bot.memory.get_by_path(['profilesync'])['tg2ho']
@@ -681,7 +676,7 @@ def tg_command_get_me(bot, chat_id, args):
     user_id = args['user_id']
     chat_type = args['chat_type']
     if 'private' != chat_type:
-        yield from bot.sendMessage(chat_id, "Comand must be run in private chat!")
+        yield from bot.sendMessage(chat_id, "Command must be run in private chat!")
         return
 
     if bot.is_telegram_admin(user_id):
