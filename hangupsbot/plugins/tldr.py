@@ -197,7 +197,7 @@ def tldr_base(bot, conv_id, parameters):
             conv_tldr[str(time.time())] = tldr
             for conv in conv_id_list:
                 bot.memory.set_by_path(['tldr', conv], conv_tldr)
-            message = _('<em>{}</em> added to TL;DR. Count: {}').format(tldr, len(conv_tldr))
+            message = _('"{}" added to TL;DR. Count: {}').format(tldr, len(conv_tldr))
 
             return message, display
 
