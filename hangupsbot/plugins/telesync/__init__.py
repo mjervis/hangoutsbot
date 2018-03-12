@@ -835,7 +835,7 @@ def tg_command_tldr(bot, chat_id, args):
 @asyncio.coroutine
 def tg_command_sync_profile(bot, chat_id, args):
     if 'private' != args['chat_type']:
-        yield from bot.sendMessage(chat_id, "Comand must be run in private chat!")
+        yield from bot.sendMessage(chat_id, "Command must be run in private chat!")
         return
 
     telegram_uid = str(args['user_id'])
@@ -865,13 +865,13 @@ def tg_command_sync_profile(bot, chat_id, args):
 
     yield from bot.sendMessage( chat_id,
                                 "please paste the following code in a private hangout with the bot: "
-                                    "/bot syncprofile {}".format(registration_code))
+                                    "{} syncprofile {}".format(bot.ho_bot._handlers.bot_command[0], registration_code))
 
 
 @asyncio.coroutine
 def tg_command_unsync_profile(bot, chat_id, args):
     if 'private' != args['chat_type']:
-        yield from bot.sendMessage(chat_id, "Comand must be run in private chat!")
+        yield from bot.sendMessage(chat_id, "Command must be run in private chat!")
         return
 
     telegram_uid = str(args['user_id'])
@@ -915,7 +915,7 @@ def tg_command_get_me(bot, chat_id, args):
     user_id = args['user_id']
     chat_type = args['chat_type']
     if 'private' != chat_type:
-        yield from bot.sendMessage(chat_id, "Comand must be run in private chat!")
+        yield from bot.sendMessage(chat_id, "Command must be run in private chat!")
         return
 
     if bot.is_telegram_admin(user_id):
