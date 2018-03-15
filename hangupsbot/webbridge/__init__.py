@@ -337,27 +337,36 @@ class WebFramework:
     def _get_user_details(self, user, external_context=None):
         chat_id = None
         preferred_name = None # guaranteed
-        full_name = None
+        full_name = first_name = None
         nickname = None
         photo_url = None
+        prefer_fullname = self.bot.get_config_option("prefer_fullname")
+        prefer_richname = self.bot.get_config_option("prefer_richname")
 
         if isinstance(user, str):
             full_name = user
+            first_name = user.split(' ')[0]
         else:
             chat_id = user.id_.chat_id
             permauser = self.bot.get_hangups_user(chat_id)
             nickname = self.bot.get_memory_suboption(chat_id, 'nickname') or None
             if isinstance(permauser, dict):
                 full_name = permauser["full_name"]
+                first_name = permauser["first_name"]
                 if "photo_url" in permauser:
                     photo_url = permauser["photo_url"]
             else:
                 full_name = permauser.full_name
                 photo_url = permauser.photo_url
+                first_name = permauser.first_name
             if photo_url and not photo_url.startswith("http"):
                 photo_url = "https:" + photo_url
 
-        if nickname:
+        if prefer_fullname:
+            preferred_name = full_name
+        elif prefer_richname and nickname:
+            preferred_name = "{} ({})".format(first_name, nickname).strip()
+        elif nickname:
             preferred_name = nickname
         else:
             preferred_name = full_name

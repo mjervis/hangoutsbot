@@ -245,7 +245,6 @@ class TelegramBot(telepot.aio.Bot):
             if flavor == "chat":  # chat message
                 content_type, chat_type, chat_id = telepot.glance(msg)
                 if content_type == 'text':
-                    logger.info(" ----> Message {}".format(msg))
                     if TelegramBot.is_command(msg):  # bot command
                         cmd, params = TelegramBot.parse_command(msg['text'])
                         user_id = TelegramBot.get_user_id(msg)
@@ -402,6 +401,7 @@ def tg_util_sync_get_user_name(msg, chat_action='from'):
         # guaranteed full name
         hangups_user = bot.get_hangups_user(chat_id)
         full_name = hangups_user.full_name
+        first_name = hangups_user.first_name
 
         # determine if the hangoutsbot user has /setnickname
         nickname = False
@@ -410,6 +410,8 @@ def tg_util_sync_get_user_name(msg, chat_action='from'):
 
         if "prefer_fullname" in telesync_config and telesync_config["prefer_fullname"]:
             preferred_name = full_name
+        elif "prefer_richname" in telesync_config and telesync_config["prefer_richname"] and nickname:
+            preferred_name = "{} ({})".format(first_name, nickname).strip()
         elif nickname:
             preferred_name = nickname
         else:
