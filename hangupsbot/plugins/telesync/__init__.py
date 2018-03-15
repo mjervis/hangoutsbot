@@ -128,9 +128,14 @@ class TelegramBot(telepot.aio.Bot):
     @staticmethod
     def is_command(msg):
         ho_bot_aliases = tuple(tg_bot.ho_bot.memory.get("bot.command_aliases") or [])
+        logger.info("Bot aliases: {0}".format(ho_bot_aliases))
         if 'text' in msg:
+            logger.info("     TEXT IN MESSAGE {}".format(msg['text']))
+            if( msg['text'].startswith('/')):
+                logger.info("Starts wiht /")
             if( msg['text'].startswith('/')
                     and not msg['text'].startswith(ho_bot_aliases) ):
+                logger.info(" IT STARTED WITH ONE ")
                 return True
         return False
 
@@ -245,7 +250,9 @@ class TelegramBot(telepot.aio.Bot):
             if flavor == "chat":  # chat message
                 content_type, chat_type, chat_id = telepot.glance(msg)
                 if content_type == 'text':
+                    logger.info(" ----> Message {}".format(msg))
                     if TelegramBot.is_command(msg):  # bot command
+                        logger.info("-----> COMMAND {}".format(msg))
                         cmd, params = TelegramBot.parse_command(msg['text'])
                         user_id = TelegramBot.get_user_id(msg)
                         args = {'params': params, 'user_id': user_id, 'chat_type': chat_type}
@@ -257,7 +264,10 @@ class TelegramBot(telepot.aio.Bot):
                             else:
                                 yield from self.sendMessage(chat_id, "Unknown command: {cmd}".format(cmd=cmd))
 
-                    else:  # plain text message
+                    elif "edit_date" in msg and msg['from']['is_bot']: # Edit from a bot is often spam...
+                        logger.info("EDIT DATE {0} and is_bot {0}".format(msg['edit_date'], msg['from']['is_bot']))
+                        handleboteditedmessage(self, chat_id, msg)
+                    else: # just send it
                         yield from self.onMessageCallback(self, chat_id, msg)
 
                 elif content_type == 'location':
@@ -312,6 +322,10 @@ class TelegramBot(telepot.aio.Bot):
 
             else:
                 raise telepot.BadFlavor(msg)
+
+
+def handleboteditedmessage(self, chat_id, msg):
+    return True
 
 
 def tg_util_get_group_name(msg):
