@@ -88,7 +88,9 @@ def bootcamp(bot, event, *args):
 def bccheck(bot, event, *args):
     bootcampgroupid = bot.get_config_suboption(event.conv_id, 'bootcamp')
     asylumgroupid = bot.get_config_suboption(event.conv_id, 'asylum')
-    message = "For this group:<br /><b>Bootcamp:</b> {} <br /><b>Asylum:</b> {}".format(bootcampgroupid, asylumgroupid)
+    asylum_name = bot.conversations.get_name(asylumgroupid)
+    bootcamp_name = bot.conversations.get_name(bootcampgroupid)
+    message = "For this group:<br /><b>Bootcamp:</b> {}({}) <br /><b>Asylum:</b> {} ({})".format(bootcamp_name, bootcampgroupid, asylum_name, asylumgroupid)
     logger.info(message)
     
     yield from bot.coro_send_message(event.conv_id, message)
