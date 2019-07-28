@@ -785,7 +785,7 @@ def tg_command_remove_bot_admin(bot, chat_id, args):
 
     yield from bot.sendMessage(chat_id, text)
 
- @asyncio.coroutine
+@asyncio.coroutine
 def tg_command_sync_profile(bot, chat_id, args):
     if 'private' != args['chat_type']:
         yield from bot.sendMessage(chat_id, "Shhh! This should only be between us. Whisper it to me in PM here: @{username}".format(username=bot.username))
@@ -819,13 +819,9 @@ def tg_command_sync_profile(bot, chat_id, args):
     yield from bot.sendMessage(chat_id, "Paste the following command in a private hangout with me. This can be found here: https://hangouts.google.com/chat/person/{}".format(bot.ho_bot.user_self()["chat_id"]))
     message = "/bot syncprofile {}".format(str(registration_code))
     message = re.sub(r"(?<!\S)\/bot(?!\S)", bot.ho_bot._handlers.bot_command[0], message)
-
-<<<<<<< HEAD
-    yield from bot.sendMessage(chat_id, "Paste the following command in the private ho with me")
-    yield from bot.sendMessage(chat_id, "{} syncprofile {}".format(bot.ho_bot._handlers.bot_command[0], str(rndm)))
-=======
+    
     yield from bot.sendMessage(chat_id, message)
->>>>>>> upstream/master
+
 
 
 @asyncio.coroutine
