@@ -785,41 +785,10 @@ def tg_command_remove_bot_admin(bot, chat_id, args):
 
     yield from bot.sendMessage(chat_id, text)
 
-
-@asyncio.coroutine
-<<<<<<< HEAD
-def tg_command_tldr(bot, chat_id, args):
-    params = args['params']
-
-    tg2ho_dict = tg_bot.ho_bot.memory.get_by_path(['telesync'])['tg2ho']
-    
-    ho_conv_id = str(chat_id)
-    if ho_conv_id in tg2ho_dict:
-        ho_conv_id = tg2ho_dict[ho_conv_id]
-    
-    tldr_args = {'params': params, 'conv_id': ho_conv_id}
-    try:
-        text = bot.ho_bot.call_shared("plugin_tldr_shared", bot.ho_bot, tldr_args)
-        yield from bot.sendMessage(chat_id, text, parse_mode='html')
-    except KeyError as ke:
-        yield from bot.sendMessage(chat_id, "TLDR plugin is not active. KeyError: {e}".format(e=ke))
-
-
-@asyncio.coroutine
-def tg_command_sync_profile(bot, chat_id, args):
-    if 'private' != args['chat_type']:
-        yield from bot.sendMessage(chat_id, "Command must be run in private chat!")
-        return
-    tg2ho_dict = bot.ho_bot.memory.get_by_path(['profilesync'])['tg2ho']
-    ho2tg_dict = bot.ho_bot.memory.get_by_path(['profilesync'])['ho2tg']
-    user_id = args['user_id']
-    if str(user_id) in tg2ho_dict:
-        yield from bot.sendMessage(chat_id, "Your profile is currently synced, to change this run /unsyncprofile")
-=======
+ @asyncio.coroutine
 def tg_command_sync_profile(bot, chat_id, args):
     if 'private' != args['chat_type']:
         yield from bot.sendMessage(chat_id, "Shhh! This should only be between us. Whisper it to me in PM here: @{username}".format(username=bot.username))
->>>>>>> upstream/master
         return
 
     telegram_uid = str(args['user_id'])
