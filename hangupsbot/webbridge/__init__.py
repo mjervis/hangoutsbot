@@ -292,6 +292,11 @@ class WebFramework:
             if linked_hangups_user:
                 source_user = linked_hangups_user
 
+        if "source_edited" in external_context:
+            source_edited = external_context["source_edited"]
+        else:
+            source_edited = "False"
+
         passthru =  {
             "original_request": {
                 "message": message,
@@ -303,7 +308,7 @@ class WebFramework:
                 "source_user": source_user,
                 "source_uid": source_uid,
                 "source_gid": source_gid,
-                "source_edited": external_context.get("source_edited"),
+                "source_edited": source_edited,
                 "source_action": external_context.get("source_action"),
                 "plugin": self.plugin_name },
             "norelay": [ self.uid ] }
@@ -313,11 +318,12 @@ class WebFramework:
 
         logger.info("{}:receive:{}".format(self.plugin_name, passthru))
 
-        yield from self.bot.coro_send_message(
-            conv_id,
-            formatted_message,
-            image_id = image_id,
-            context = { "passthru": passthru })
+        if not source_edited:
+            yield from self.bot.coro_send_message(
+                conv_id,
+                formatted_message,
+                image_id = image_id,
+                context = { "passthru": passthru })
 
     def map_external_uid_with_hangups_user(self, source_uid, external_context):
         return False
