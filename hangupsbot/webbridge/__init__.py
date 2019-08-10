@@ -318,12 +318,33 @@ class WebFramework:
 
         logger.info("{}:receive:{}".format(self.plugin_name, passthru))
 
-        if not source_edited:
+        sync_edits = self._getSyncEdits(conv_id, external_context["config"])
+
+        if sync_edits or not source_edited:
             yield from self.bot.coro_send_message(
                 conv_id,
                 formatted_message,
                 image_id = image_id,
                 context = { "passthru": passthru })
+
+    def _getSyncEdits(self, conv_id, config):
+        # Default to original behaviour
+        value = "true"
+        # If no memory entry exists for the conversation, create it.
+        if not self.bot.memory.exists(['conversations']):
+            self.bot.memory.set_by_path(['conversations'],{})
+        if not self.bot.memory.exists(['conversations',conv_id]):
+            self.bot.memory.set_by_path(['conversations',conv_id],{})
+
+        # Check for conversation specific overide in memory:
+        if self.bot.memory.exists(['conversations', conv_id, "sync_edits"]):
+            value = self.bot.memory.get_by_path(['conversations', conv_id, "sync_edits"])
+        else:
+            # default to global setting
+            if "sync_edits" in config:
+                value = config["sync_edits"]
+
+        return value
 
     def map_external_uid_with_hangups_user(self, source_uid, external_context):
         return False
